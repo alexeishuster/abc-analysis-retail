@@ -1,41 +1,37 @@
-# abc-analysis-retail
-# 📊 Многомерный ABC-анализ ассортимента аптечной сети
+📊 Multi-Dimensional ABC Analysis of a Pharmacy Chain's Assortment
+📌 Business Problem
+A pharmacy chain wants to optimize its assortment and inventory management. A classic single-metric ABC analysis (e.g., based only on revenue) doesn't provide the full picture: a product can be a revenue leader but bring minimal profit due to low markups or large discounts.
+Goal: Conduct a multi-dimensional ABC analysis across three key metrics simultaneously:
+Units Sold (amount) — product popularity
+Profit (profit) — financial contribution of the product
+Revenue (revenue) — total sales volume of the product
 
-## 📌 Бизнес-задача
-
-Аптечная сеть хочет оптимизировать ассортимент и управление запасами. Классический ABC-анализ по одному критерию (например, только по выручке) не даёт полной картины: товар может быть лидером по выручке, но приносить минимальную прибыль из-за низких наценок или больших скидок.
-
-**Цель:** провести многомерный ABC-анализ по трём ключевым метрикам одновременно:
-1. **Количество проданных единиц (amount)** — популярность товара
-2. **Прибыль (profit)** — финансовый вклад товара
-3. **Выручка (revenue)** — оборот товара
-
-Это позволяет выявить:
-- 🌟 **"Звёзды"** — товары класса A по всем трём метрикам
-- 💰 **"Дойные коровы"** — A по прибыли, но B/C по выручке (высокомаржинальные)
-- 📉 **"Балласт"** — товары класса C по всем метрикам (кандидаты на вывод)
-- ⚠️ **"Проблемные"** — товары с расхождением классов (например, A по выручке, но C по прибыли)
+This allows us to identify:
+🌟 "Stars" — Class A products across all three metrics
+💰 "Cash Cows" — Class A in profit, but B/C in revenue (high-margin items)
+📉 "Dead Weight" — Class C products across all metrics (candidates for delisting)
+⚠️ "Problematic" — products with class discrepancies (e.g., Class A in revenue, but Class C in profit)
 
 ---
 
-## 🗂️ Данные
+## 🗂️ Data
 
-Исходная таблица `sales` содержит строки кассовых чеков:
+The raw sales table contains line items from sales receipts:
 
-| Поле | Описание |
+| Field | Description |
 |------|----------|
-| `dr_ndrugs` | Название товара |
-| `dr_kol` | Количество проданных единиц (может быть отрицательным — возвраты) |
-| `dr_croz` | Розничная цена за единицу |
+| `dr_ndrugs` | Quantity of units sold (can be negative — product returns) |
+| `dr_kol` | Retail price per unit |
+| `dr_croz` | Purchase (cost) price per unit |
 | `dr_czak` | Закупочная цена за единицу |
-| `dr_sdisc` | Сумма скидки на всю строку чека |
-| `dr_dat` | Дата чека |
+| `dr_sdisc` | Total discount amount applied to the entire receipt line |
+| `dr_dat` | Receipt date |
 
-**Важно:** отрицательные значения `dr_kol` — это возвраты товара. Они участвуют в расчётах наравне с продажами, что корректно отражает реальный оборот.
+Important: Negative values in dr_kol represent product returns. They are included in the calculations on par with regular sales, which accurately reflects the real turnover.
 
 ---
 
-### Формулы расчёта метрик
-Выручка (revenue) = Σ(dr_kol × dr_croz) − Σ(dr_sdisc)
-Прибыль (profit) = Σ(dr_kol × (dr_croz − dr_czak)) − Σ(dr_sdisc)
-Количество (amount) = Σ(dr_kol)
+### Metric Calculation Formulas
+Revenue  = Σ(dr_kol × dr_croz) − Σ(dr_sdisc)
+Profit   = Σ(dr_kol × (dr_croz − dr_czak)) − Σ(dr_sdisc)
+Amount   = Σ(dr_kol)
